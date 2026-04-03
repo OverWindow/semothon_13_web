@@ -38,10 +38,11 @@
   align-items: center;
   gap: 12px;
   background-color: var(--card-color);
-  padding: 8px 12px 8px 10px;
+  padding: 10px 20px;
   border-radius: 14px;
   box-shadow: var(--shadow-sm);
   border: 1px solid rgba(255,255,255,0.8);
+  min-width: 140px;
 }
 
 .user-profile-widget .avatar {
@@ -65,10 +66,11 @@
 }
 
 .user-profile-widget .user-name {
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-main);
   line-height: 1;
+  white-space: nowrap;
 }
 
 /* Logout button */

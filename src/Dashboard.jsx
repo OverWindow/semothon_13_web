@@ -145,9 +145,6 @@ export default function Dashboard({ setAuth }) {
 
           {/* 프로필 & 로그아웃 위젯 */}
           <div className="user-profile-widget">
-            <div className="avatar">
-              {avatarChar}
-            </div>
             <div className="user-info">
               <span className="user-name">{displayName} 교수</span>
               <button onClick={handleLogout} className="logout-btn">로그아웃</button>
