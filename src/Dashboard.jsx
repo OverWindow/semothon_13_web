@@ -99,7 +99,7 @@ export default function Dashboard({ setAuth }) {
       const num = Number(stage);
       return num <= 100 ? num : Math.min(100, num * 20);
     }
-    return 50;
+    return 42;
   };
 
   // API에서 넘어온 이름을 우선적으로 보여주고 없으면 username, 실패 시 '관리자'
@@ -114,8 +114,8 @@ export default function Dashboard({ setAuth }) {
         <div className="header-titles">
           <h1 className="title">AI COACH</h1>
           <div className="subject-selector">
-            <select 
-              value={selectedSubject} 
+            <select
+              value={selectedSubject}
               onChange={(e) => setSelectedSubject(e.target.value)}
               className="subject-dropdown"
             >
