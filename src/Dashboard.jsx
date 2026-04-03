@@ -112,7 +112,7 @@ export default function Dashboard({ setAuth }) {
       {/* 🔹 공통 상단 헤더 */}
       <header className="dashboard-header">
         <div className="header-titles">
-          <h1 className="title">조교 KHU</h1>
+          <h1 className="title">AI COACH</h1>
           <div className="subject-selector">
             <select 
               value={selectedSubject} 

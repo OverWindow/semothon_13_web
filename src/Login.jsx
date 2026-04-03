@@ -46,7 +46,7 @@ export default function Login({ setAuth }) {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1 className="login-title">조교 KHU</h1>
+        <h1 className="login-title">AI COACH</h1>
         <p className="login-subtitle">데이터분석캡스톤디자인 01분반</p>
 
         <form onSubmit={handleSubmit} className="login-form">

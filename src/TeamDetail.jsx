@@ -1,31 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import Evaluation from './Evaluation';
 
+// 🔹 우선순위 뱃지 컴포넌트 추가
+const PriorityBadge = ({ priority }) => {
+  if (!priority) return null;
+  const p = priority.toUpperCase();
+  
+  let icon = null;
+  let label = '';
+  let className = 'todo-priority ';
+
+  if (p === 'HIGH') {
+    icon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>;
+    className += 'priority-high';
+    label = 'HIGH';
+  } else if (p === 'MEDIUM') {
+    icon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+    className += 'priority-medium';
+    label = 'MED';
+  } else if (p === 'LOW') {
+    icon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>;
+    className += 'priority-low';
+    label = 'LOW';
+  } else {
+    return null;
+  }
+
+  return (
+    <span className={className} title={`Priority: ${label}`}>
+      {icon}
+    </span>
+  );
+};
+
 // API 호출 실패 또는 할 일이 없을 때 유저별로 연관성 있게 표시할 더미 테마들
 const DUMMY_TODO_SETS = [
   [
-    { id: 'd1', text: '주제 선정 및 기획안 초안 작성', done: true },
-    { id: 'd2', text: '관련 논문/자료 리서치 요약', done: true },
-    { id: 'd3', text: '중간 피드백 반영 및 기획 고도화', done: false },
-    { id: 'd4', text: '최종 기획서 마무으리', done: false }
+    { id: 'd1', text: '주제 선정 및 기획안 초안 작성', done: true, priority: 'HIGH' },
+    { id: 'd2', text: '관련 논문/자료 리서치 요약', done: true, priority: 'MEDIUM' },
+    { id: 'd3', text: '중간 피드백 반영 및 기획 고도화', done: false, priority: 'HIGH' },
+    { id: 'd4', text: '최종 기획서 마무으리', done: false, priority: 'LOW' }
   ],
   [
-    { id: 'd1', text: '기술 스택 확정 및 환경 세팅', done: true },
-    { id: 'd2', text: '핵심 API 아키텍처 설계', done: true },
-    { id: 'd3', text: '서버 연동 및 배포 테스트', done: false },
-    { id: 'd4', text: '버그 픽스 및 최적화', done: false }
+    { id: 'd1', text: '기술 스택 확정 및 환경 세팅', done: true, priority: 'HIGH' },
+    { id: 'd2', text: '핵심 API 아키텍처 설계', done: true, priority: 'HIGH' },
+    { id: 'd3', text: '서버 연동 및 배포 테스트', done: false, priority: 'MEDIUM' },
+    { id: 'd4', text: '버그 픽스 및 최적화', done: false, priority: 'LOW' }
   ],
   [
-    { id: 'd1', text: 'UI/UX 레퍼런스 조사', done: true },
-    { id: 'd2', text: '주요 화면 스토리보드 스케치', done: true },
-    { id: 'd3', text: '메인 디자인 프로토타입 완성', done: false },
-    { id: 'd4', text: '그래픽 리소스 추출 및 정리', done: false }
+    { id: 'd1', text: 'UI/UX 레퍼런스 조사', done: true, priority: 'LOW' },
+    { id: 'd2', text: '주요 화면 스토리보드 스케치', done: true, priority: 'MEDIUM' },
+    { id: 'd3', text: '메인 디자인 프로토타입 완성', done: false, priority: 'HIGH' },
+    { id: 'd4', text: '그래픽 리소스 추출 및 정리', done: false, priority: 'MEDIUM' }
   ],
   [
-    { id: 'd1', text: '분석용 데이터셋 수집', done: true },
-    { id: 'd2', text: '결측치 제거 및 데이터 전처리', done: false },
-    { id: 'd3', text: '탐색적 데이터 분석(EDA) 수행', done: false },
-    { id: 'd4', text: '시각화 차트 구현', done: false }
+    { id: 'd1', text: '분석용 데이터셋 수집', done: true, priority: 'HIGH' },
+    { id: 'd2', text: '결측치 제거 및 데이터 전처리', done: false, priority: 'HIGH' },
+    { id: 'd3', text: '탐색적 데이터 분석(EDA) 수행', done: false, priority: 'MEDIUM' },
+    { id: 'd4', text: '시각화 차트 구현', done: false, priority: 'LOW' }
   ]
 ];
 
@@ -179,8 +211,17 @@ export default function TeamDetail({ room, onBack }) {
                        const isDone = todo.status === 'DONE' || todo.done === true;
                        const textLabel = todo.title || todo.text;
                        return (
-                         <li key={todo.id || idx} className={isDone ? 'todo-done' : ''}>
-                           {idx + 1}. {textLabel}
+                         <li 
+                           key={todo.id || idx} 
+                           className={isDone ? 'todo-done todo-item-hover' : 'todo-item-hover'}
+                         >
+                           <span className="todo-text">
+                             <span>{idx + 1}. {textLabel}</span>
+                             <PriorityBadge priority={todo.priority} />
+                           </span>
+                           <div className="todo-tooltip">
+                             {todo.description || '상세 설명이 없습니다.'}
+                           </div>
                          </li>
                        );
                      })}
