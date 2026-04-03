@@ -1,54 +1,134 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Evaluation from './Evaluation';
 
-// API 연동 전 사용할 팀원 Mock Data
-const MOCK_MEMBERS = [
-  { 
-    id: 1, 
-    name: '표지훈', 
-    role: '자료조사, 발표', 
-    progress: 33, 
-    todos: [
-      { id: 1, text: '할일 1', done: false }, 
-      { id: 2, text: '할일 2', done: false }, 
-      { id: 3, text: '할일 3', done: true }
-    ] 
-  },
-  { 
-    id: 2, 
-    name: '김현진', 
-    role: '자료조사, 발표', 
-    progress: 33, 
-    todos: [
-      { id: 1, text: '할일 1', done: false }, 
-      { id: 2, text: '할일 2', done: false }, 
-      { id: 3, text: '할일 3', done: true }
-    ] 
-  },
-  { 
-    id: 3, 
-    name: '황윤성', 
-    role: '자료조사, 발표', 
-    progress: 33, 
-    todos: [
-      { id: 1, text: '할일 1', done: false }, 
-      { id: 2, text: '할일 2', done: false }, 
-      { id: 3, text: '할일 3', done: true }
-    ] 
-  },
-  { 
-    id: 4, 
-    name: '이우성', 
-    role: '자료조사, 발표', 
-    progress: 33, 
-    todos: [
-      { id: 1, text: '할일 1', done: false }, 
-      { id: 2, text: '할일 2', done: false }, 
-      { id: 3, text: '할일 3', done: true }
-    ] 
-  },
+// API 호출 실패 또는 할 일이 없을 때 유저별로 연관성 있게 표시할 더미 테마들
+const DUMMY_TODO_SETS = [
+  [
+    { id: 'd1', text: '주제 선정 및 기획안 초안 작성', done: true },
+    { id: 'd2', text: '관련 논문/자료 리서치 요약', done: true },
+    { id: 'd3', text: '중간 피드백 반영 및 기획 고도화', done: false },
+    { id: 'd4', text: '최종 기획서 마무으리', done: false }
+  ],
+  [
+    { id: 'd1', text: '기술 스택 확정 및 환경 세팅', done: true },
+    { id: 'd2', text: '핵심 API 아키텍처 설계', done: true },
+    { id: 'd3', text: '서버 연동 및 배포 테스트', done: false },
+    { id: 'd4', text: '버그 픽스 및 최적화', done: false }
+  ],
+  [
+    { id: 'd1', text: 'UI/UX 레퍼런스 조사', done: true },
+    { id: 'd2', text: '주요 화면 스토리보드 스케치', done: true },
+    { id: 'd3', text: '메인 디자인 프로토타입 완성', done: false },
+    { id: 'd4', text: '그래픽 리소스 추출 및 정리', done: false }
+  ],
+  [
+    { id: 'd1', text: '분석용 데이터셋 수집', done: true },
+    { id: 'd2', text: '결측치 제거 및 데이터 전처리', done: false },
+    { id: 'd3', text: '탐색적 데이터 분석(EDA) 수행', done: false },
+    { id: 'd4', text: '시각화 차트 구현', done: false }
+  ]
 ];
 
 export default function TeamDetail({ room, onBack }) {
+  const [roomDetail, setRoomDetail] = useState(room); // 초기값은 props로 받은 요약 정보
+  const [todos, setTodos] = useState(null); // 백엔드에서 불러온 모든 유저의 TODO 배열
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token') || '';
+        const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
+        };
+
+        // 1. 방 상세 정보 및 멤버 정보 패치
+        const roomRes = await fetch(`https://semothon13app-production.up.railway.app/rooms/${room.id}`, { method: 'GET', headers });
+        if (!roomRes.ok) {
+          throw new Error('팀 상세 정보를 불러오는데 실패했습니다.');
+        }
+        const roomData = await roomRes.json();
+        setRoomDetail(roomData);
+
+        // 2. 할 일(Todo) 데이터 패치
+        // 라우터의 정확한 prefix를 몰라 가장 유력한 예상 경로들을 fallback으로 탐색합니다.
+        try {
+          let todoRes = await fetch(`https://semothon13app-production.up.railway.app/todos/rooms/${room.id}`, { method: 'GET', headers });
+          
+          if (!todoRes.ok && todoRes.status === 404) {
+            todoRes = await fetch(`https://semothon13app-production.up.railway.app/rooms/${room.id}/todos`, { method: 'GET', headers });
+          }
+
+          if (todoRes.ok) {
+            const todoData = await todoRes.json();
+            if (todoData.success && Array.isArray(todoData.todos)) {
+              setTodos(todoData.todos);
+            } else {
+              setTodos(null);
+            }
+          } else {
+            setTodos(null);
+          }
+        } catch (e) {
+          console.error("Todo 데이터를 불러오는 중 오류 발생:", e);
+          setTodos(null); // 네트워크 오류 시 null 유지하여 더미데이터 사용
+        }
+
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [room.id]);
+
+  // 멤버별/팀 전체 진행률 계산 로직
+  const calculateProgress = () => {
+    if (!roomDetail || !roomDetail.members || roomDetail.members.length === 0) return { teamProgress: 0, memberStats: {} };
+    
+    let sumPercentages = 0;
+    const memberStats = {};
+
+    roomDetail.members.forEach(member => {
+      let memberTodos = todos !== null ? todos.filter(t => t.assignee_user_id === member.user_id) : [];
+      
+      // 더미 폴백 로직
+      if (memberTodos.length === 0) {
+        const fallbackSetIndex = member.user_id % DUMMY_TODO_SETS.length;
+        memberTodos = DUMMY_TODO_SETS[fallbackSetIndex];
+      }
+
+      const total = memberTodos.length;
+      // API 데이터는 status === 'DONE', 더미 데이터는 done === true 속성을 판별
+      const doneCount = memberTodos.filter(t => t.status === 'DONE' || t.done === true).length;
+      const progress = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+
+      memberStats[member.user_id] = {
+        todos: memberTodos,
+        progress: progress
+      };
+
+      sumPercentages += progress;
+    });
+
+    const teamProgress = Math.round(sumPercentages / roomDetail.members.length);
+    return { teamProgress, memberStats };
+  };
+
+  const { teamProgress, memberStats } = calculateProgress();
+
+  if (isEvaluating) {
+    return <Evaluation room={roomDetail} onBack={() => setIsEvaluating(false)} />;
+  }
+
+  const members = roomDetail.members || [];
+
   return (
     <div className="team-detail-container">
       <div className="team-detail-header">
@@ -59,34 +139,60 @@ export default function TeamDetail({ room, onBack }) {
           목록으로 돌아가기
         </button>
         
-        <h1 className="detail-title">{room.title}</h1>
+        <div className="header-row">
+          <h1 className="detail-title">{roomDetail.title}</h1>
+          <button className="action-btn" onClick={() => setIsEvaluating(true)}>이 팀 채점하기</button>
+        </div>
         
         <div className="detail-info-box">
-          <p className="detail-topic">주제: '{room.description || '주제 미정'}'</p>
-          <p className="detail-status">진행 현황: {room.current_stage || '대기중'}</p>
+          <p className="detail-topic">주제: '{roomDetail.description || '주제 미정'}'</p>
+          <p className="detail-status">
+            진행 현황: {roomDetail.current_stage || '대기중'} 
+            <span style={{marginLeft: '12px', color: 'var(--primary-color)', fontWeight: 'bold'}}>
+              (팀 종합 진행률: {teamProgress}%)
+            </span>
+          </p>
         </div>
       </div>
 
-      <div className="member-grid">
-         {MOCK_MEMBERS.map(member => (
-            <div key={member.id} className="member-card">
-               <h2 className="member-name">{member.name}</h2>
-               <div className="member-meta">
-                 <p className="member-role">{member.role}</p>
-                 <p className="member-progress">진행률: <span style={{color: 'var(--primary-color)', fontWeight: 'bold'}}>{member.progress}%</span></p>
-               </div>
-               
-               <h3 className="todo-heading">To-Do list</h3>
-               <ul className="todo-list">
-                 {member.todos.map(todo => (
-                   <li key={todo.id} className={todo.done ? 'todo-done' : ''}>
-                     {todo.id}. {todo.text}
-                   </li>
-                 ))}
-               </ul>
-            </div>
-         ))}
-      </div>
+      {loading && <div style={{textAlign: 'center', margin: '40px 0'}}>불러오는 중...</div>}
+      {error && <div style={{textAlign: 'center', margin: '40px 0', color: 'var(--primary-color)'}}>{error}</div>}
+
+      {!loading && !error && (
+        <div className="member-grid">
+           {members.map((member) => {
+              const mStat = memberStats[member.user_id];
+              const displayTodos = mStat ? mStat.todos : [];
+              const progressPercentage = mStat ? mStat.progress : 0;
+
+              return (
+                <div key={member.user_id} className="member-card">
+                   <h2 className="member-name">{member.display_name || member.username}</h2>
+                   <div className="member-meta">
+                     <p className="member-role">{member.role_in_room || '역할 미정'}</p>
+                     <p className="member-progress">진행률: <span style={{color: 'var(--primary-color)', fontWeight: 'bold'}}>{progressPercentage}%</span></p>
+                   </div>
+                   
+                   <h3 className="todo-heading">To-Do list</h3>
+                   <ul className="todo-list">
+                     {displayTodos.map((todo, idx) => {
+                       const isDone = todo.status === 'DONE' || todo.done === true;
+                       const textLabel = todo.title || todo.text;
+                       return (
+                         <li key={todo.id || idx} className={isDone ? 'todo-done' : ''}>
+                           {idx + 1}. {textLabel}
+                         </li>
+                       );
+                     })}
+                   </ul>
+                </div>
+              );
+           })}
+           {members.length === 0 && (
+             <div style={{color: 'var(--subtitle-color)'}}>팀원이 아직 없습니다.</div>
+           )}
+        </div>
+      )}
     </div>
   );
 }

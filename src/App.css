@@ -621,3 +621,427 @@
   margin-right: 6px;
   font-weight: bold;
 }
+
+/* --- Action & Evaluation Elements --- */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.action-btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.95;
+}
+
+/* --- Evaluation Page Styles --- */
+.evaluation-container {
+  animation: fadeIn 0.3s ease;
+}
+
+.eval-content-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 900px) {
+  .eval-content-grid {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.eval-card, .eval-summary-card {
+  background-color: var(--card-color);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  padding: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  height: max-content;
+}
+
+.eval-card-header h2, .eval-summary-card h2 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 8px;
+}
+
+.eval-item-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  background-color: var(--input-fill-color);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.eval-item-row:focus-within {
+  border-color: rgba(163, 22, 33, 0.3);
+}
+
+.eval-input-name {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 1.05rem;
+  outline: none;
+}
+
+.eval-input-score {
+  width: 70px;
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+  font-family: var(--font-sans);
+  color: var(--primary-color);
+  font-weight: 700;
+  text-align: right;
+  outline: none;
+  font-size: 1.1rem;
+}
+
+.eval-input-score:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(163, 22, 33, 0.1);
+}
+
+.eval-remove-btn {
+  background: none;
+  border: none;
+  color: var(--subtitle-color);
+  font-size: 1.6rem;
+  font-weight: 300;
+  cursor: pointer;
+  padding: 0 8px;
+  border-radius: 6px;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.eval-remove-btn:hover {
+  color: #d32f2f;
+}
+
+.eval-add-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  border-top: 1px dashed rgba(163, 22, 33, 0.2);
+  padding-top: 24px;
+}
+
+.eval-input-add {
+  flex: 1;
+  padding: 14px 16px;
+  border: 1px dashed rgba(163, 22, 33, 0.4);
+  border-radius: 12px;
+  background-color: transparent;
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.eval-input-add:focus {
+  border-color: var(--primary-color);
+  border-style: solid;
+}
+
+.eval-add-btn {
+  background-color: var(--subtitle-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.eval-add-btn:hover {
+  background-color: var(--text-main);
+}
+
+.summary-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.summary-score-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background-color: var(--input-fill-color);
+  border-radius: 12px;
+}
+
+.summary-score-group.highlight {
+  background-color: rgba(163, 22, 33, 0.05);
+  border: 1px solid rgba(163, 22, 33, 0.2);
+  margin-top: 8px;
+}
+
+.summary-label {
+  font-size: 1.05rem;
+  color: var(--subtitle-color);
+  font-weight: 600;
+}
+
+.summary-score-group.highlight .summary-label {
+  color: var(--primary-color);
+}
+
+.summary-value {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.summary-score-group.highlight .summary-value {
+  font-size: 2.2rem;
+  color: var(--primary-color);
+}
+
+.eval-submit-btn {
+  width: 100%;
+  padding: 18px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-top: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.eval-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  opacity: 0.95;
+}
+
+/* --- Table Based Evaluation Styles --- */
+.eval-table-wrapper {
+  background-color: var(--card-color);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  overflow-x: auto;
+  padding: 10px;
+  margin-bottom: 30px;
+}
+
+.eval-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  min-width: 800px;
+}
+
+.eval-table th, .eval-table td {
+  padding: 16px;
+  border-bottom: 1px solid rgba(163, 22, 33, 0.1);
+  white-space: nowrap;
+}
+
+.eval-table thead th {
+  background-color: var(--input-fill-color);
+  font-family: var(--font-heading);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.eval-table thead th:first-child {
+  border-top-left-radius: 12px;
+}
+.eval-table thead th:last-child {
+  border-top-right-radius: 12px;
+}
+
+.eval-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.eval-table tbody tr:hover {
+  background-color: rgba(163, 22, 33, 0.02);
+}
+
+.eval-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.th-criterion-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  border-radius: 8px;
+  padding: 4px 8px;
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-subtle);
+  transition: border-color 0.2s;
+}
+
+.th-criterion-header:focus-within {
+  border-color: var(--primary-color);
+}
+
+.eval-th-input {
+  border: none;
+  background: transparent;
+  width: 90px;
+  font-family: var(--font-sans);
+  color: var(--primary-color);
+  font-weight: 700;
+  outline: none;
+  font-size: 1rem;
+}
+
+.eval-th-remove {
+  background: none;
+  border: none;
+  color: var(--subtitle-color);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0;
+  margin-left: auto;
+}
+
+.eval-th-remove:hover {
+  color: #e53935;
+}
+
+.eval-th-add-btn {
+  background-color: transparent;
+  color: var(--subtitle-color);
+  border: 1px dashed var(--subtitle-color);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.eval-th-add-btn:hover {
+  background-color: var(--subtitle-color);
+  color: white;
+}
+
+/* Table Cells */
+.member-name-flex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--text-main);
+}
+
+.avatar-small {
+  width: 32px;
+  height: 32px;
+  background-color: var(--primary-color);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.member-role-td {
+  color: var(--subtitle-color);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.eval-td-input {
+  width: 80px;
+  padding: 10px;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 8px;
+  background-color: var(--input-fill-color);
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  font-weight: 700;
+  text-align: right;
+  outline: none;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.eval-td-input:focus {
+  border-color: var(--primary-color);
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(163, 22, 33, 0.1);
+}
+
+.stat-val-td {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 1.2rem;
+  text-align: right;
+}
+
+.highlight-td {
+  color: var(--primary-color);
+  font-size: 1.4rem;
+  background-color: rgba(163, 22, 33, 0.05);
+}
+.highlight-th {
+  background-color: rgba(163, 22, 33, 0.08) !important;
+  color: var(--primary-color) !important;
+}
+
+.eval-table-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.eval-save-btn {
+  font-size: 1.15rem;
+  padding: 16px 40px;
+}
+
+

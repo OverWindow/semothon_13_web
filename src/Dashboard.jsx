@@ -8,20 +8,22 @@ export default function Dashboard({ setAuth }) {
   const [error, setError] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
 
-  // 로컬스토리지에서 로그인된 유저 정보 가져오기
-  const savedUser = localStorage.getItem('user');
-  const currentUser = savedUser ? JSON.parse(savedUser) : null;
+  // 로컬스토리지에서 로그인된 유저 정보 가져오기 (초기값 용도)
+  const [currentUser, setCurrentUser] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved ? JSON.parse(saved) : null;
+  });
 
   const fetchRooms = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token') || ''; 
-      
+      const token = localStorage.getItem('token') || '';
+
       const response = await fetch('https://semothon13app-production.up.railway.app/rooms', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
+          'Authorization': `Bearer ${token}`
         }
       });
 
@@ -44,7 +46,30 @@ export default function Dashboard({ setAuth }) {
     }
   };
 
+  const fetchMyProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const response = await fetch('https://semothon13app-production.up.railway.app/profile/me', {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentUser(data);
+        localStorage.setItem('user', JSON.stringify(data)); // 최신 디스플레이 네임 업데이트
+      } else {
+        console.warn('Failed to fetch /profile/me, status:', response.status);
+      }
+    } catch (err) {
+      console.error('Failed to fetch profile', err);
+    }
+  };
+
   useEffect(() => {
+    fetchMyProfile();
     fetchRooms();
   }, []);
 
@@ -65,10 +90,15 @@ export default function Dashboard({ setAuth }) {
     if (!stage) return 0;
     if (!isNaN(stage)) {
       const num = Number(stage);
-      return num <= 100 ? num : Math.min(100, num * 20); 
+      return num <= 100 ? num : Math.min(100, num * 20);
     }
-    return 50; 
+    return 50;
   };
+
+  // API에서 넘어온 이름을 우선적으로 보여주고 없으면 username, 실패 시 '관리자'
+  console.log(currentUser)
+  const displayName = currentUser?.display_name || currentUser?.username || '관리자';
+  const avatarChar = displayName.charAt(0).toUpperCase();
 
   return (
     <div className="dashboard-container">
@@ -78,7 +108,7 @@ export default function Dashboard({ setAuth }) {
           <h1 className="title">조교 KHU</h1>
           <p className="subtitle">데이터분석캡스톤디자인 01분반</p>
         </div>
-        
+
         <div className="header-actions">
           {/* 목록 화면일 때만 검색창 표시 */}
           {!selectedRoom && (
@@ -86,10 +116,10 @@ export default function Dashboard({ setAuth }) {
               <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <input 
-                type="text" 
-                className="search-input" 
-                placeholder="조장, 팀원, 혹은 주제 검색" 
+              <input
+                type="text"
+                className="search-input"
+                placeholder="조장, 팀원, 혹은 주제 검색"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -99,10 +129,10 @@ export default function Dashboard({ setAuth }) {
           {/* 프로필 & 로그아웃 위젯 */}
           <div className="user-profile-widget">
             <div className="avatar">
-              {currentUser?.username ? currentUser.username.charAt(0).toUpperCase() : 'U'}
+              {avatarChar}
             </div>
             <div className="user-info">
-              <span className="user-name">{currentUser?.username || '관리자'}</span>
+              <span className="user-name">{displayName} 교수</span>
               <button onClick={handleLogout} className="logout-btn">로그아웃</button>
             </div>
           </div>
@@ -112,22 +142,22 @@ export default function Dashboard({ setAuth }) {
       {/* 🔹 메인 컨텐츠 영역 */}
       <main className="dashboard-main-area">
         {selectedRoom ? (
-          <TeamDetail 
-            room={selectedRoom} 
-            onBack={() => setSelectedRoom(null)} 
+          <TeamDetail
+            room={selectedRoom}
+            onBack={() => setSelectedRoom(null)}
           />
         ) : (
           <div className="dashboard-grid">
-            {loading && <div style={{width: '100%', textAlign: 'center'}}>로딩 중...</div>}
-            {error && <div style={{width: '100%', textAlign: 'center', color: 'var(--primary-color)'}}>{error}</div>}
-            
+            {loading && <div style={{ width: '100%', textAlign: 'center' }}>로딩 중...</div>}
+            {error && <div style={{ width: '100%', textAlign: 'center', color: 'var(--primary-color)' }}>{error}</div>}
+
             {!loading && !error && filteredData.map((room) => {
               const progress = getProgressPercent(room.current_stage);
-              
+
               return (
-                <div 
-                  key={room.id} 
-                  className="team-card group clickable" 
+                <div
+                  key={room.id}
+                  className="team-card group clickable"
                   onClick={() => setSelectedRoom(room)}
                 >
                   <div className="team-card-inner">
@@ -146,7 +176,7 @@ export default function Dashboard({ setAuth }) {
                         <span className="info-label">팀장</span>
                         <span className="info-value leader">{room.host_name}</span>
                       </div>
-                      
+
                       <div className="info-group">
                         <span className="info-label">팀원</span>
                         <span className="info-value members">
@@ -173,8 +203,8 @@ export default function Dashboard({ setAuth }) {
                       </span>
                     </div>
                     <div className="progress-track" title={`${progress}% 완료`}>
-                      <div 
-                        className="progress-fill" 
+                      <div
+                        className="progress-fill"
                         style={{ width: `${progress}%` }}
                       >
                         <div className="progress-glow"></div>
@@ -184,9 +214,9 @@ export default function Dashboard({ setAuth }) {
                 </div>
               );
             })}
-            
+
             {!loading && !error && filteredData.length === 0 && (
-              <div style={{width: '100%', textAlign: 'center', gridColumn: '1 / -1', padding: '40px'}}>
+              <div style={{ width: '100%', textAlign: 'center', gridColumn: '1 / -1', padding: '40px' }}>
                 참여 중인 팀이 없습니다.
               </div>
             )}
@@ -196,4 +226,3 @@ export default function Dashboard({ setAuth }) {
     </div>
   );
 }
-
