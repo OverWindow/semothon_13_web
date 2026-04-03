@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import TeamDetail from './TeamDetail';
 
+const SUBJECTS = ["세계와 시민", "소프트웨어공학", "디자인적 사고"];
+
 export default function Dashboard({ setAuth }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedSubject, setSelectedSubject] = useState(SUBJECTS[0]);
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,7 +22,8 @@ export default function Dashboard({ setAuth }) {
       setLoading(true);
       const token = localStorage.getItem('token') || '';
 
-      const response = await fetch('https://semothon13app-production.up.railway.app/rooms', {
+      const endpoint = `https://semothon13app-production.up.railway.app/rooms/subject/search?subject=${encodeURIComponent(selectedSubject)}`;
+      const response = await fetch(endpoint, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +42,7 @@ export default function Dashboard({ setAuth }) {
       }
 
       const data = await response.json();
-      setRooms(data);
+      setRooms(Array.isArray(data) ? data : []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -69,8 +73,11 @@ export default function Dashboard({ setAuth }) {
   };
 
   useEffect(() => {
-    fetchMyProfile();
     fetchRooms();
+  }, [selectedSubject]);
+
+  useEffect(() => {
+    fetchMyProfile();
   }, []);
 
   const handleLogout = () => {
@@ -106,7 +113,17 @@ export default function Dashboard({ setAuth }) {
       <header className="dashboard-header">
         <div className="header-titles">
           <h1 className="title">조교 KHU</h1>
-          <p className="subtitle">데이터분석캡스톤디자인 01분반</p>
+          <div className="subject-selector">
+            <select 
+              value={selectedSubject} 
+              onChange={(e) => setSelectedSubject(e.target.value)}
+              className="subject-dropdown"
+            >
+              {SUBJECTS.map(subj => (
+                <option key={subj} value={subj}>{subj} 분반</option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="header-actions">
@@ -217,7 +234,7 @@ export default function Dashboard({ setAuth }) {
 
             {!loading && !error && filteredData.length === 0 && (
               <div style={{ width: '100%', textAlign: 'center', gridColumn: '1 / -1', padding: '40px' }}>
-                참여 중인 팀이 없습니다.
+                선택한 과목 분반에 참여 중인 팀이 없습니다.
               </div>
             )}
           </div>
