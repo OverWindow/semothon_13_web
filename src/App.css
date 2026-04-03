@@ -41,7 +41,7 @@
   padding: 10px 20px;
   border-radius: 14px;
   box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(255,255,255,0.8);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   min-width: 140px;
 }
 
@@ -63,6 +63,7 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  width: 200px;
 }
 
 .user-profile-widget .user-name {
@@ -268,7 +269,8 @@
 }
 
 .team-card:hover .topic-card {
-  background-color: #f0e6e6; /* slightly darker on card hover for dynamic feel */
+  background-color: #f0e6e6;
+  /* slightly darker on card hover for dynamic feel */
 }
 
 .topic-text {
@@ -333,8 +335,13 @@
 }
 
 @keyframes progress-shimmer {
-  0% { transform: translateX(-100px); }
-  100% { transform: translateX(100px); }
+  0% {
+    transform: translateX(-100px);
+  }
+
+  100% {
+    transform: translateX(100px);
+  }
 }
 
 /* Responsive adjustments */
@@ -343,11 +350,11 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .search-container {
     max-width: 100%;
   }
-  
+
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
@@ -471,8 +478,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .team-detail-header {
@@ -623,6 +637,7 @@
   margin-right: 6px;
   font-weight: bold;
 }
+
 /* --- Action & Evaluation Elements --- */
 .header-row {
   display: flex;
@@ -668,7 +683,8 @@
   }
 }
 
-.eval-card, .eval-summary-card {
+.eval-card,
+.eval-summary-card {
   background-color: var(--card-color);
   border-radius: 20px;
   box-shadow: var(--shadow-md);
@@ -677,7 +693,8 @@
   height: max-content;
 }
 
-.eval-card-header h2, .eval-summary-card h2 {
+.eval-card-header h2,
+.eval-summary-card h2 {
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 700;
@@ -873,7 +890,8 @@
   min-width: 800px;
 }
 
-.eval-table th, .eval-table td {
+.eval-table th,
+.eval-table td {
   padding: 16px;
   border-bottom: 1px solid rgba(163, 22, 33, 0.1);
   white-space: nowrap;
@@ -891,6 +909,7 @@
 .eval-table thead th:first-child {
   border-top-left-radius: 12px;
 }
+
 .eval-table thead th:last-child {
   border-top-right-radius: 12px;
 }
@@ -914,7 +933,7 @@
   background: white;
   border-radius: 8px;
   padding: 4px 8px;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   box-shadow: var(--shadow-subtle);
   transition: border-color 0.2s;
 }
@@ -999,7 +1018,7 @@
 .eval-td-input {
   width: 80px;
   padding: 10px;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   background-color: var(--input-fill-color);
   font-family: var(--font-sans);
@@ -1030,6 +1049,7 @@
   font-size: 1.4rem;
   background-color: rgba(163, 22, 33, 0.05);
 }
+
 .highlight-th {
   background-color: rgba(163, 22, 33, 0.08) !important;
   color: var(--primary-color) !important;
