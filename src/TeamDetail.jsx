@@ -1,38 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Evaluation from './Evaluation';
 
-// 🔹 우선순위 뱃지 컴포넌트 추가
-const PriorityBadge = ({ priority }) => {
-  if (!priority) return null;
-  const p = priority.toUpperCase();
-  
-  let icon = null;
-  let label = '';
-  let className = 'todo-priority ';
-
-  if (p === 'HIGH') {
-    icon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>;
-    className += 'priority-high';
-    label = 'HIGH';
-  } else if (p === 'MEDIUM') {
-    icon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
-    className += 'priority-medium';
-    label = 'MED';
-  } else if (p === 'LOW') {
-    icon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>;
-    className += 'priority-low';
-    label = 'LOW';
-  } else {
-    return null;
-  }
-
-  return (
-    <span className={className} title={`Priority: ${label}`}>
-      {icon}
-    </span>
-  );
-};
-
 // API 호출 실패 또는 할 일이 없을 때 유저별로 연관성 있게 표시할 더미 테마들
 const DUMMY_TODO_SETS = [
   [
@@ -217,7 +185,6 @@ export default function TeamDetail({ room, onBack }) {
                          >
                            <span className="todo-text">
                              <span>{idx + 1}. {textLabel}</span>
-                             <PriorityBadge priority={todo.priority} />
                            </span>
                            <div className="todo-tooltip">
                              {todo.description || '상세 설명이 없습니다.'}

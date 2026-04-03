@@ -661,48 +661,6 @@
   gap: 10px;
 }
 
-.todo-priority {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  border-radius: 6px;
-  line-height: 1;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-  opacity: 1 !important; /* 완료 상태에서도 선명하게 */
-}
-
-/* 프리미엄 솔리드 컬러와 외곽선 포인트 */
-.priority-high {
-  background-color: #fee2e2;
-  color: #ef4444;
-  border: 1px solid #fca5a5;
-}
-
-.priority-high svg {
-  color: #ef4444;
-}
-
-.priority-medium {
-  background-color: #fef3c7;
-  color: #f59e0b;
-  border: 1px solid #fcd34d;
-}
-
-.priority-medium svg {
-  color: #f59e0b;
-}
-
-.priority-low {
-  background-color: #dcfce7;
-  color: #22c55e;
-  border: 1px solid #86efac;
-}
-
-.priority-low svg {
-  color: #22c55e;
-}
-
 .todo-list li.todo-done {
   text-decoration: line-through;
   color: var(--subtitle-color);
