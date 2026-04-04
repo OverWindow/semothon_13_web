@@ -6,4 +6,7 @@ AI-COACH(아이코) 앱이 학생들을 위한 거라면
 
 참여율을 엿볼 수 있는 그런 웹사이트.
 
+기술 스택: React vite + Javascript
+
+배포: Vercel
 
