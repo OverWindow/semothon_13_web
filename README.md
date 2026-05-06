@@ -14,3 +14,6 @@ AI-COACH(아이코) 앱이 학생들을 위한 거라면
 
 배포: Vercel
 
+<img width="1918" height="965" alt="image" src="https://github.com/user-attachments/assets/a0b2dfb3-1fc1-40b6-95b5-1f257ba0eb37" />
+
+
